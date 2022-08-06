@@ -23,7 +23,7 @@ namespace limiredo_backend.Repositories.Implementations
             this.logger = logger;
             this.mapper = mapper;
 
-            SeedData();
+            //SeedData();
         }
 
         //TODO - delete (just for developing purposes only)

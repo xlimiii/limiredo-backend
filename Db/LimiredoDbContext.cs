@@ -13,6 +13,13 @@ namespace limiredo_backend.Db
         {
 
         }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                //TODO
+            }
+        }
 
     }
 }
