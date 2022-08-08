@@ -59,5 +59,28 @@ namespace limiredo_backend.Repositories.Implementations
                 return (false, null, ex.Message);
             }
         }
+
+        public async Task<(bool IsSuccess, List<Models.Sound> Sounds, string ErrorMessage)> GetRandomSoundsAsync(int count)
+        {
+            try
+            {
+                logger?.LogInformation("Querying sounds");
+                var soundsCount = dbContext.Sounds.Count();
+                var sounds = new List<Models.Sound>();
+                for(int i = 0; i < count; i++)
+                {
+                    var random = new Random();
+                    int index = random.Next(soundsCount);
+                    var sound = await dbContext.Sounds.Skip(index).Take(1).FirstOrDefaultAsync();
+                    sounds.Add(mapper.Map<Db.Sound, Models.Sound>(sound));
+                }
+                return (true, sounds, null);
+            }
+            catch (System.Exception ex)
+            {
+                logger?.LogError(ex.ToString());
+                return (false, null, ex.Message);
+            }
+        }
     }
 }

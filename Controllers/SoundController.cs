@@ -34,5 +34,19 @@ namespace limiredo_backend.Controllers
                 return NotFound();
             }
         }
+
+        [HttpGet("random")]
+        public async Task<IActionResult> GetRandomSounds(int count=2)
+        {
+            var result = await soundRepository.GetRandomSoundsAsync(count);
+            if (result.IsSuccess == true)
+            {
+                return Ok(result.Sounds);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
     }
 }
