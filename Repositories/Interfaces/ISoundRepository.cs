@@ -9,7 +9,8 @@ namespace limiredo_backend.Repositories.Interfaces
     public interface ISoundRepository
     {
         Task<(bool IsSuccess, Models.Sound Sound, string ErrorMessage)> GetSoundAsync(int soundId);
-        Task<(bool IsSuccess, List<Models.Sound> Sounds, string ErrorMessage)> GetRandomSoundsAsync(int count);
+        Task<(bool IsSuccess, List<Models.Sound> Sounds, string ErrorMessage)> GetRandomSoundsAsync(int count =2 );
+        Task<(bool IsSuccess, List<Models.Sound> Sounds, string ErrorMessage)> GetRandomIntervalFromListAsync(string[] intervals, int type);
 
     }
 }

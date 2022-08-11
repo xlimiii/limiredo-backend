@@ -26,19 +26,6 @@ namespace limiredo_backend.Repositories.Implementations
             //SeedData();
         }
 
-        //TODO - delete (just for developing purposes only)
-        private void SeedData()
-        {
-            if (!dbContext.Sounds.Any())
-            {
-                dbContext.Sounds.Add(new Db.Sound() { Id = 1, File = "File1", Height = 15, SourceId = 0});
-                dbContext.Sounds.Add(new Db.Sound() { Id = 2, File = "File2", Height = 16, SourceId = 0 });
-                dbContext.Sounds.Add(new Db.Sound() { Id = 3, File = "File3", Height = 17, SourceId = 0 });
-
-                dbContext.SaveChanges();
-            }
-        }
-
         public async Task<(bool IsSuccess, Models.Sound Sound, string ErrorMessage)> GetSoundAsync(int soundId)
         {
             try
@@ -60,14 +47,14 @@ namespace limiredo_backend.Repositories.Implementations
             }
         }
 
-        public async Task<(bool IsSuccess, List<Models.Sound> Sounds, string ErrorMessage)> GetRandomSoundsAsync(int count)
+        public async Task<(bool IsSuccess, List<Models.Sound> Sounds, string ErrorMessage)> GetRandomSoundsAsync(int count = 2)
         {
             try
             {
                 logger?.LogInformation("Querying sounds");
                 var soundsCount = dbContext.Sounds.Count();
                 var sounds = new List<Models.Sound>();
-                for(int i = 0; i < count; i++)
+                for (int i = 0; i < count; i++)
                 {
                     var random = new Random();
                     int index = random.Next(soundsCount);
@@ -81,6 +68,29 @@ namespace limiredo_backend.Repositories.Implementations
                 logger?.LogError(ex.ToString());
                 return (false, null, ex.Message);
             }
+        }
+        public async Task<(bool IsSuccess, List<Models.Sound> Sounds, string ErrorMessage)> GetRandomIntervalFromListAsync(string[] intervals, int type)
+        {
+            (bool IsSuccess, List<Models.Sound> Sounds, string ErrorMessage) interval;
+            do
+            {
+                interval = await GetRandomSoundsAsync(2);
+            }
+            while (!intervals.Any(x => Math.Abs(interval.Sounds[1].Height - interval.Sounds[0].Height).ToString() == x));
+
+            switch (type)
+            {
+                case 2:
+                    interval.Sounds = interval.Sounds.OrderBy(x => x.Height).ToList();
+                    break;
+                case 1:
+                    interval.Sounds = interval.Sounds.OrderByDescending(x => x.Height).ToList();
+                    break;
+                default:
+                    break;
+            }
+            return interval;
+
         }
     }
 }
